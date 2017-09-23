@@ -141,6 +141,8 @@
 - (void)p_setUpButtonWithTitle:(NSString *)title image:(UIImage *)image target:(id)target action:(SEL)action {
     [self setButton:[[UIButton alloc] init]];
     [self addSubview:self.button];
+    [self.button setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [self.button setTintColor:[UIColor blueColor]];
     [self.button setTitle:title forState:UIControlStateNormal];
     [self.button.titleLabel setFont:ZG_BAR_ITEM_FONT];
     if (image.renderingMode == UIImageRenderingModeAutomatic) {
