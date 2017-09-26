@@ -15,7 +15,7 @@
 @property (nonatomic, strong) UIButton *button;
 @property (nonatomic, assign) BOOL fixed;
 @property (nonatomic, assign) BOOL isLastItem;
-@property (nonatomic, weak) UINavigationBar *navBar;
+@property (nonatomic, weak) UIView *navBar;
 
 @end
 
@@ -64,12 +64,13 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    if ([[UIDevice currentDevice] systemVersion].floatValue < 11) {
-        [self p_setTitleFollowNavBarTintColorFromView:self];
+    if (self.fixed) {
         return;
     }
+    self.fixed = YES;
+    [self p_setTitleFollowNavBarTintColorFromView:self];
     
-    if (self.fixed) {
+    if ([[UIDevice currentDevice] systemVersion].floatValue < 11 || [self.navBar isKindOfClass:UIToolbar.class]) {
         return;
     }
     
@@ -121,9 +122,6 @@
             [stackView zg_addRightBorderGap:-screenBorderGap];
         }
     }
-    
-    [self p_setTitleFollowNavBarTintColorFromView:adaptorView];
-    self.fixed = YES;
 }
 
 #pragma mark - KVO
@@ -141,8 +139,6 @@
 - (void)p_setUpButtonWithTitle:(NSString *)title image:(UIImage *)image target:(id)target action:(SEL)action {
     [self setButton:[[UIButton alloc] init]];
     [self addSubview:self.button];
-    [self.button setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-    [self.button setTintColor:[UIColor blueColor]];
     [self.button setTitle:title forState:UIControlStateNormal];
     [self.button.titleLabel setFont:ZG_BAR_ITEM_FONT];
     if (image.renderingMode == UIImageRenderingModeAutomatic) {
@@ -177,15 +173,15 @@
     return (UIStackView *)tempView;
 }
 
-- (UINavigationBar *)p_getNavBarViewFromView:(UIView *)view {
+- (UIView *)p_getNavBarViewFromView:(UIView *)view {
     if (!view) {
         return nil;
     }
     UIView *tempView = view;
-    while (![tempView isKindOfClass:UINavigationBar.class] && tempView.superview) {
+    while (![tempView isKindOfClass:UINavigationBar.class] && ![tempView isKindOfClass:UIToolbar.class] && tempView.superview) {
         tempView = tempView.superview;
     }
-    return (UINavigationBar *)tempView;
+    return tempView;
 }
 
 - (void)p_setTitleFollowNavBarTintColorFromView:(UIView *)view {
@@ -193,10 +189,12 @@
         self.navBar = [self p_getNavBarViewFromView:view];
         [self.button setTitleColor:self.navBar.tintColor forState:UIControlStateNormal];
         
-        [self.navBar addObserver:self
-                      forKeyPath:@"tintColor"
-                         options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
-                         context:nil];
+        if ([self.navBar isKindOfClass:UINavigationBar.class]) {
+            [self.navBar addObserver:self
+                          forKeyPath:@"tintColor"
+                             options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
+                             context:nil];
+        }
     }
 }
 

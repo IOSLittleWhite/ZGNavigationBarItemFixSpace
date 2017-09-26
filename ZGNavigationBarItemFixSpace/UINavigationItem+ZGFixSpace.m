@@ -14,15 +14,15 @@
 @implementation UINavigationItem (ZGFixSpace)
 
 + (void)load {
-//    [self zg_swizzleInstanceMethodWithOriginSel:@selector(setLeftBarButtonItem:)
-//                                    swizzledSel:@selector(zg_setLeftBarButtonItem:)];
-//    [self zg_swizzleInstanceMethodWithOriginSel:@selector(setLeftBarButtonItems:)
-//                                    swizzledSel:@selector(zg_setLeftBarButtonItems:)];
-//
-//    [self zg_swizzleInstanceMethodWithOriginSel:@selector(setRightBarButtonItem:)
-//                                    swizzledSel:@selector(zg_setRightBarButtonItem:)];
-//    [self zg_swizzleInstanceMethodWithOriginSel:@selector(setRightBarButtonItems:)
-//                                    swizzledSel:@selector(zg_setRightBarButtonItems:)];
+    [self zg_swizzleInstanceMethodWithOriginSel:@selector(setLeftBarButtonItem:)
+                                    swizzledSel:@selector(zg_setLeftBarButtonItem:)];
+    [self zg_swizzleInstanceMethodWithOriginSel:@selector(setLeftBarButtonItems:)
+                                    swizzledSel:@selector(zg_setLeftBarButtonItems:)];
+
+    [self zg_swizzleInstanceMethodWithOriginSel:@selector(setRightBarButtonItem:)
+                                    swizzledSel:@selector(zg_setRightBarButtonItem:)];
+    [self zg_swizzleInstanceMethodWithOriginSel:@selector(setRightBarButtonItems:)
+                                    swizzledSel:@selector(zg_setRightBarButtonItems:)];
 }
 
 - (void)zg_setLeftBarButtonItem:(UIBarButtonItem *)leftBarButtonItem {
@@ -51,7 +51,7 @@
         if (customView.itemType == ZGBarButtonItemTypeImage) {
             gap -= ZG_BAR_ITEM_LEFT_ICON_EDGE_INSETS;
         }
-        [items addObject:[UIBarButtonItem fixedSpaceWithWidth:-(15 - gap)]];
+        [items addObject:[UIBarButtonItem zg_fixedSpaceWithWidth:-(15 - gap)]];
     }
     ZGBarButtonItemCustomView *prevCustomeView = nil;
     for (NSInteger i=0; i<leftBarButtonItems.count; i++) {
@@ -91,7 +91,7 @@
         if (customView.itemType == ZGBarButtonItemTypeImage) {
             gap -= ZG_BAR_ITEM_RIGHT_ICON_EDGE_INSETS;
         }
-        [items addObject:[UIBarButtonItem fixedSpaceWithWidth:-(15 - gap)]];
+        [items addObject:[UIBarButtonItem zg_fixedSpaceWithWidth:-(15 - gap)]];
     }
     ZGBarButtonItemCustomView *prevCustomeView = nil;
     for (NSInteger i=0; i<rightBarButtonItems.count; i++) {

@@ -14,7 +14,7 @@
 /*
  *  used before iOS 11
  */
-+ (UIBarButtonItem *)fixedSpaceWithWidth:(CGFloat)width;
++ (UIBarButtonItem *)zg_fixedSpaceWithWidth:(CGFloat)width;
 
 /*
  *  the side the item be added in (left or right)

@@ -11,7 +11,7 @@
 
 @implementation UIBarButtonItem (ZGFixSpace)
 
-+ (UIBarButtonItem *)fixedSpaceWithWidth:(CGFloat)width {
++ (UIBarButtonItem *)zg_fixedSpaceWithWidth:(CGFloat)width {
     UIBarButtonItem *spaceBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace
                                                                                     target:nil
                                                                                     action:nil];
@@ -20,14 +20,14 @@
 }
 
 + (void)load {
-//    [self zg_swizzleInstanceMethodWithOriginSel:@selector(initWithTitle:style:target:action:)
-//                                    swizzledSel:@selector(zg_initWithTitle:style:target:action:)];
-//    
-//    [self zg_swizzleInstanceMethodWithOriginSel:@selector(initWithImage:style:target:action:)
-//                                    swizzledSel:@selector(zg_initWithImage:style:target:action:)];
-//    
-//    [self zg_swizzleInstanceMethodWithOriginSel:@selector(initWithCustomView:)
-//                                    swizzledSel:@selector(zg_initWithCustomView:)];
+    [self zg_swizzleInstanceMethodWithOriginSel:@selector(initWithTitle:style:target:action:)
+                                    swizzledSel:@selector(zg_initWithTitle:style:target:action:)];
+    
+    [self zg_swizzleInstanceMethodWithOriginSel:@selector(initWithImage:style:target:action:)
+                                    swizzledSel:@selector(zg_initWithImage:style:target:action:)];
+    
+    [self zg_swizzleInstanceMethodWithOriginSel:@selector(initWithCustomView:)
+                                    swizzledSel:@selector(zg_initWithCustomView:)];
 }
 
 - (void)zg_setPosition:(ZGBarButtonItemPosition)position {
@@ -41,6 +41,9 @@
 }
 
 - (instancetype)zg_initWithTitle:(NSString *)title style:(UIBarButtonItemStyle)style target:(id)target action:(SEL)action {
+    if (!title && style == UIBarButtonItemStyleDone) {
+        title = NSLocalizedStringFromTable(@"done", @"ZGBarButtonTitle", nil);
+    }
     ZGBarButtonItemCustomView *zgCustomView = [[ZGBarButtonItemCustomView alloc] initWithTitle:title
                                                                                         target:target
                                                                                         action:action];
