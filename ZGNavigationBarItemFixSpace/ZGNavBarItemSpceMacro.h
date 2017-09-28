@@ -18,3 +18,16 @@
 
 
 #endif /* ZGNavBarItemSpceMacro_h */
+
+/*
+ 版本1.2
+ 2017-09-27
+ 1. 替换UIBarButtonItem原生实例化方法initWithBarButtonSystemItem:target:action:
+ 2. 替换UIBarButtonItem原生的setTarget: 和 setAction: 方法
+ 
+ 版本1.1
+ 2017-09-26
+ 1. 增加UIBarButtonItem被添加到UIToolbar上的处理；
+ 2. 增加对UIBarButtonItem的UIBarButtonItemStyleDone类型的解析；
+ 
+ */

@@ -22,11 +22,17 @@ typedef NS_ENUM(NSInteger, ZGBarButtonItemType) {
 @interface ZGBarButtonItemCustomView : UIView
 
 @property (nonatomic, assign) ZGBarButtonItemPosition position;
-@property (nonatomic, weak) ZGBarButtonItemCustomView *prevCustomView;
 @property (nonatomic, assign) ZGBarButtonItemType itemType;
+@property (nonatomic, weak) ZGBarButtonItemCustomView *prevCustomView;
+@property (nonatomic, weak) ZGBarButtonItemCustomView *nextCustomView;
+@property (nonatomic, weak) UIBarButtonItem *barButtonItem;
+@property (nonatomic, weak) id target;
+@property (nonatomic, assign) SEL action;
+
 
 - (instancetype)initWithTitle:(NSString *)title target:(id)target action:(SEL)action;
 - (instancetype)initWithImage:(UIImage *)image target:(id)target action:(SEL)action;
 - (instancetype)initWithCustomView:(UIView *)customView;
+- (BOOL)isFixedForStackView:(UIView *)stackView;
 
 @end

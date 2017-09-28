@@ -31,7 +31,7 @@
         return;
     }
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 11) {
-        [leftBarButtonItem zg_setPosition:ZGBarButtonItemPositionLeft];
+        [(ZGBarButtonItemCustomView *)leftBarButtonItem.customView setPosition:ZGBarButtonItemPositionLeft];
         [self zg_setLeftBarButtonItem:leftBarButtonItem];
     } else {
         [self setLeftBarButtonItems:@[leftBarButtonItem]];
@@ -56,10 +56,12 @@
     ZGBarButtonItemCustomView *prevCustomeView = nil;
     for (NSInteger i=0; i<leftBarButtonItems.count; i++) {
         UIBarButtonItem *item = [leftBarButtonItems objectAtIndex:i];
-        [item zg_setPosition:ZGBarButtonItemPositionLeft];
+        ZGBarButtonItemCustomView *zgCustomView = (ZGBarButtonItemCustomView *)item.customView;
+        zgCustomView.position = ZGBarButtonItemPositionLeft;
+        zgCustomView.prevCustomView = prevCustomeView;
+        prevCustomeView.nextCustomView = zgCustomView;
+        prevCustomeView = zgCustomView;
         [items addObject:item];
-        [item zg_setPrevCustomView:prevCustomeView];
-        prevCustomeView = (ZGBarButtonItemCustomView *)item.customView;
     }
     [self zg_setLeftBarButtonItems:items];
 }
@@ -71,7 +73,7 @@
     }
     
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 11) {
-        [rightBarButtonItem zg_setPosition:ZGBarButtonItemPositionRight];
+        [(ZGBarButtonItemCustomView *)rightBarButtonItem.customView setPosition:ZGBarButtonItemPositionRight];
         [self zg_setRightBarButtonItem:rightBarButtonItem];
     } else {
         [self setRightBarButtonItems:@[rightBarButtonItem]];
@@ -86,19 +88,22 @@
     
     NSMutableArray *items = [NSMutableArray array];
     if ([[[UIDevice currentDevice] systemVersion] floatValue] < 11) {
-        ZGBarButtonItemCustomView *customView = (ZGBarButtonItemCustomView *)((UIBarButtonItem *)[rightBarButtonItems firstObject]).customView;
+        ZGBarButtonItemCustomView *firstCustomView = (ZGBarButtonItemCustomView *)((UIBarButtonItem *)[rightBarButtonItems firstObject]).customView;
         CGFloat gap = ZG_BAR_ITEM_SCREEN_BORDER_GAP;
-        if (customView.itemType == ZGBarButtonItemTypeImage) {
+        if (firstCustomView.itemType == ZGBarButtonItemTypeImage) {
             gap -= ZG_BAR_ITEM_RIGHT_ICON_EDGE_INSETS;
         }
         [items addObject:[UIBarButtonItem zg_fixedSpaceWithWidth:-(15 - gap)]];
     }
+    
     ZGBarButtonItemCustomView *prevCustomeView = nil;
     for (NSInteger i=0; i<rightBarButtonItems.count; i++) {
         UIBarButtonItem *item = [rightBarButtonItems objectAtIndex:i];
-        [item zg_setPosition:ZGBarButtonItemPositionRight];
-        [item zg_setPrevCustomView:prevCustomeView];
-        prevCustomeView = (ZGBarButtonItemCustomView *)item.customView;
+        ZGBarButtonItemCustomView *zgCustomView = (ZGBarButtonItemCustomView *)item.customView;
+        zgCustomView.position = ZGBarButtonItemPositionRight;
+        zgCustomView.prevCustomView = prevCustomeView;
+        prevCustomeView.nextCustomView = zgCustomView;
+        prevCustomeView = zgCustomView;
         [items addObject:item];
     }
     [self zg_setRightBarButtonItems:items];

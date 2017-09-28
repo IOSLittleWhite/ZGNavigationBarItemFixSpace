@@ -15,7 +15,7 @@
                                                      attribute:NSLayoutAttributeWidth
                                                      relatedBy:NSLayoutRelationEqual
                                                         toItem:nil
-                                                     attribute:NSLayoutAttributeNotAnAttribute
+                                                     attribute:NSLayoutAttributeWidth
                                                     multiplier:1.0
                                                       constant:size.width]];
     
@@ -23,10 +23,9 @@
                                                      attribute:NSLayoutAttributeHeight
                                                      relatedBy:NSLayoutRelationEqual
                                                         toItem:nil
-                                                     attribute:NSLayoutAttributeNotAnAttribute
+                                                     attribute:NSLayoutAttributeHeight
                                                     multiplier:1.0
                                                       constant:size.height]];
-    
 }
 
 - (void)zg_addCenterYConstraint {
@@ -40,13 +39,16 @@
 }
 
 - (void)zg_addHorizontalGap:(CGFloat)gap toView:(UIView *)view {
+    if (!view) {
+        return;
+    }
     [self.superview addConstraint:[NSLayoutConstraint constraintWithItem:self
                                                                attribute:NSLayoutAttributeRight
                                                                relatedBy:NSLayoutRelationEqual
                                                                   toItem:view
                                                                attribute:NSLayoutAttributeLeft
                                                               multiplier:1.0
-                                                                constant:gap]];
+                                                                constant:-gap]];
 }
 
 - (void)zg_addLeftBorderGap:(CGFloat)gap {

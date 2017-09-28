@@ -16,16 +16,4 @@
  */
 + (UIBarButtonItem *)zg_fixedSpaceWithWidth:(CGFloat)width;
 
-/*
- *  the side the item be added in (left or right)
- *  used after iOS 11
- */
-- (void)zg_setPosition:(ZGBarButtonItemPosition)position;
-
-/*
- *  is the first itme at the current side
- *  used after iOS 11
- */
-- (void)zg_setPrevCustomView:(ZGBarButtonItemCustomView *)prevCustomView;
-
 @end
