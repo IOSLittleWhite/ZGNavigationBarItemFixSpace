@@ -178,9 +178,14 @@
 @implementation UIStackView (Space)
 
 - (void)layoutSubviews {
+    [super layoutSubviews];
+    
     if ([self isKindOfClass:NSClassFromString(@"_UIButtonBarStackView")]) {
         UIView *adaptorView = [self.subviews firstObject];
         ZGBarButtonItemCustomView *customView = (ZGBarButtonItemCustomView *)[adaptorView.subviews firstObject];
+        if (![customView isKindOfClass:[ZGBarButtonItemCustomView class]]) {
+            return;
+        }
         if ([customView isFixedForStackView:self]) {
             return;
         }
@@ -235,7 +240,6 @@
             }
         }
     }
-    [super layoutSubviews];
 }
 
 @end

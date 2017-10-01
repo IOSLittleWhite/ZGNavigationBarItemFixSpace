@@ -24,6 +24,7 @@
  2017-09-27
  1. 替换UIBarButtonItem原生实例化方法initWithBarButtonSystemItem:target:action:
  2. 替换UIBarButtonItem原生的setTarget: 和 setAction: 方法
+ 3. 解决popBack后，约束失效的问题，添加约束的位置发生变化，新增UIStackView的类扩展，在其layoutSoubviews方法中实现约束条件的设置
  
  版本1.1
  2017-09-26
