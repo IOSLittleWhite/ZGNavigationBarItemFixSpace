@@ -3,6 +3,9 @@
 
 <a href = "https://ioslittlewhite.github.io/2017/09/21/iOS11适配之：0代码实现导航栏UIBarButtonItem间距调整/" target="_blank"> 点击查看讲解文档
 
+#### 2017-10-01
+- 解决webView里调用键盘闪退的bug。
+
 ##### 版本1.2（2017-09-28） <br>
 - 替换UIBarButtonItem原生实例化方法initWithBarButtonSystemItem:target:action:
 - 替换UIBarButtonItem原生的setTarget: 和 setAction: 方法；
