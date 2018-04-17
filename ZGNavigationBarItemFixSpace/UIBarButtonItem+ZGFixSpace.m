@@ -39,9 +39,13 @@
 }
 
 - (void)zg_setTarget:(id)target {
-    ZGBarButtonItemCustomView *zgCustomView = (ZGBarButtonItemCustomView *)self.customView;
-    zgCustomView.target = target;
-    zgCustomView.barButtonItem = self;
+    if (target) {
+        ZGBarButtonItemCustomView *zgCustomView = (ZGBarButtonItemCustomView *)self.customView;
+        zgCustomView.target = target;
+        zgCustomView.barButtonItem = self;
+    } else {
+        [self zg_setTarget:target];
+    }
 }
 
 - (void)zg_setAction:(SEL)action {

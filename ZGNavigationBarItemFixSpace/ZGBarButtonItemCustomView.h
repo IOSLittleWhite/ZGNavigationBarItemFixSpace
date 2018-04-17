@@ -33,6 +33,5 @@ typedef NS_ENUM(NSInteger, ZGBarButtonItemType) {
 - (instancetype)initWithTitle:(NSString *)title target:(id)target action:(SEL)action;
 - (instancetype)initWithImage:(UIImage *)image target:(id)target action:(SEL)action;
 - (instancetype)initWithCustomView:(UIView *)customView;
-- (BOOL)isFixedForStackView:(UIView *)stackView;
 
 @end

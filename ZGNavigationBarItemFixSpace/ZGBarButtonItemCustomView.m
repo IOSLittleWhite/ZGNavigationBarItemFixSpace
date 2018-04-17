@@ -10,13 +10,14 @@
 #import "UIView+ZGLayoutConstraint.h"
 #import "ZGNavBarItemSpceMacro.h"
 #import "NSObject+ZGRuntime.h"
+#import "Aspects.h"
+#import <KVOController/KVOController.h>
 
 @interface ZGBarButtonItemCustomView ()
 
 @property (nonatomic, strong) UIButton *button;
 @property (nonatomic, weak) UIView *customView;
 @property (nonatomic, weak) UIView *barView;
-@property (nonatomic, weak) UIView *stackView;
 
 @end
 
@@ -62,25 +63,10 @@
     return self;
 }
 
-- (void)dealloc {
-    if (self.itemType == ZGBarButtonItemTypeTitle && [self.barView isKindOfClass:[UINavigationBar class]]) {
-        [self.barView removeObserver:self forKeyPath:@"tintColor"];
-    }
-}
-
 - (void)layoutSubviews {
     [super layoutSubviews];
     self.barView = [self p_getBarViewFromView:self];
     [self p_setButtonTitleFollowBarViewTintColor];
-}
-
-- (BOOL)isFixedForStackView:(UIView *)stackView {
-    if (stackView == self.stackView) {
-        return YES;
-    } else {
-        self.stackView = stackView;
-        return NO;
-    }
 }
 
 #pragma mark - actions
@@ -91,11 +77,6 @@
                           withObject:self.barButtonItem
                        waitUntilDone:YES];
     }
-}
-
-#pragma mark - Notice
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
-    [self.button setTitleColor:self.barView.tintColor forState:UIControlStateNormal];
 }
 
 #pragma mark - private
@@ -135,10 +116,13 @@
         [self.button setTitleColor:self.barView.tintColor forState:UIControlStateNormal];
         
         if ([self.barView isKindOfClass:UINavigationBar.class]) {
-            [self.barView addObserver:self
-                          forKeyPath:@"tintColor"
-                             options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
-                             context:nil];
+            __weak typeof(self) weakSelf = self;
+            [self.KVOController observe:self.barView
+                                keyPath:@"tintColor"
+                                options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
+                                  block:^(id  _Nullable observer, id  _Nonnull object, NSDictionary<NSString *,id> * _Nonnull change) {
+                                      [weakSelf.button setTitleColor:weakSelf.barView.tintColor forState:UIControlStateNormal];
+                                  }];
         }
     }
 }
@@ -168,78 +152,36 @@
 
 @end
 
-#pragma mark - UIStackView + Space
-@interface UIStackView (Space)
 
 
+@interface UINavigationBar (Space)
 
 @end
 
-@implementation UIStackView (Space)
+@implementation UINavigationBar (Space)
 
-- (void)layoutSubviews {
-    [super layoutSubviews];
++ (void)load {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [self zg_swizzleInstanceMethodWithOriginSel:@selector(layoutSubviews)
+                                        swizzledSel:@selector(zg_layoutSubviews)];
+    });
+}
+
+- (void)zg_layoutSubviews{
+    [self zg_layoutSubviews];
     
-    if ([self isKindOfClass:NSClassFromString(@"_UIButtonBarStackView")]) {
-        UIView *adaptorView = [self.subviews firstObject];
-        ZGBarButtonItemCustomView *customView = (ZGBarButtonItemCustomView *)[adaptorView.subviews firstObject];
-        if (![customView isKindOfClass:[ZGBarButtonItemCustomView class]]) {
-            return;
-        }
-        if ([customView isFixedForStackView:self]) {
-            return;
-        }
-        if (customView && [customView isKindOfClass:[ZGBarButtonItemCustomView class]]) {
-            
-            if (customView.position == ZGBarButtonItemPositionLeft) {
-                // borderGap
-                for (NSLayoutConstraint *constraint in self.superview.constraints) {
-                    if ([constraint.firstItem isKindOfClass:[UILayoutGuide class]] &&
-                        constraint.firstAttribute == NSLayoutAttributeLeading) {
-                        [self.superview removeConstraint:constraint];
-                    }
-                }
-                CGFloat screenBorderGap = ZG_BAR_ITEM_SCREEN_BORDER_GAP;
-                if (customView.itemType == ZGBarButtonItemTypeImage) {
-                    screenBorderGap -= ZG_BAR_ITEM_LEFT_ICON_EDGE_INSETS;
-                }
-                [self zg_addLeftBorderGap:screenBorderGap];
-                // itemGap
-                [adaptorView zg_addLeftBorderGap:0];
-                do {
-                    [adaptorView zg_addSizeConstraintWithSize:customView.frame.size];
-                    [adaptorView zg_addCenterYConstraint];
-                    [adaptorView zg_addHorizontalGap:ZG_BAR_ITEM_GAP toView:customView.nextCustomView.superview];
-                    customView = customView.nextCustomView;
-                    adaptorView = customView.superview;
-                } while (adaptorView);
-                
-            } else if (customView.position == ZGBarButtonItemPositionRight) {
-                // itemGap
-                do {
-                    [adaptorView zg_addSizeConstraintWithSize:customView.frame.size];
-                    [adaptorView zg_addCenterYConstraint];
-                    [adaptorView zg_addHorizontalGap:ZG_BAR_ITEM_GAP toView:customView.prevCustomView.superview];
-                    customView = customView.prevCustomView;
-                    adaptorView = customView.superview;
-                } while (adaptorView);
-                [adaptorView zg_addRightBorderGap:0];
-                
-                // borderGap
-                for (NSLayoutConstraint *constraint in self.superview.constraints) {
-                    if ([constraint.firstItem isKindOfClass:[UILayoutGuide class]] &&
-                        constraint.firstAttribute == NSLayoutAttributeTrailing) {
-                        [self.superview removeConstraint:constraint];
-                    }
-                }
-                CGFloat screenBorderGap = ZG_BAR_ITEM_SCREEN_BORDER_GAP;
-                if (customView.itemType == ZGBarButtonItemTypeImage) {
-                    screenBorderGap -= ZG_BAR_ITEM_RIGHT_ICON_EDGE_INSETS;
-                }
-                [self zg_addRightBorderGap:-screenBorderGap];
+    if (@available(iOS 11.0, *)) {
+        self.layoutMargins = UIEdgeInsetsZero;
+        for (UIView *subView in self.subviews) {
+            if ([subView isKindOfClass:NSClassFromString(@"_UINavigationBarContentView")]) {
+                subView.layoutMargins = UIEdgeInsetsMake(0, 4, 0, 10);
+                break;
             }
         }
     }
 }
 
 @end
+
+

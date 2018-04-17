@@ -26,7 +26,7 @@
 }
 
 - (void)zg_setLeftBarButtonItem:(UIBarButtonItem *)leftBarButtonItem {
-    if (!leftBarButtonItem || [leftBarButtonItem isKindOfClass:[NSNull class]]) {
+    if (!leftBarButtonItem || leftBarButtonItem == (id)kCFNull) {
         [self zg_setLeftBarButtonItem:nil];
         return;
     }
@@ -39,7 +39,7 @@
 }
 
 - (void)zg_setLeftBarButtonItems:(NSArray *)leftBarButtonItems {
-    if (!leftBarButtonItems || [leftBarButtonItems isKindOfClass:[NSNull class]] || leftBarButtonItems.count == 0) {
+    if (!leftBarButtonItems || leftBarButtonItems == (id)kCFNull || leftBarButtonItems.count == 0) {
         [self zg_setLeftBarButtonItems:nil];
         return;
     }
@@ -67,21 +67,21 @@
 }
 
 - (void)zg_setRightBarButtonItem:(UIBarButtonItem *)rightBarButtonItem {
-    if (!rightBarButtonItem || [rightBarButtonItem isKindOfClass:[NSNull class]]) {
+    if (!rightBarButtonItem || rightBarButtonItem == (id)kCFNull) {
         [self zg_setRightBarButtonItem:nil];
         return;
     }
-    
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 11) {
         [(ZGBarButtonItemCustomView *)rightBarButtonItem.customView setPosition:ZGBarButtonItemPositionRight];
         [self zg_setRightBarButtonItem:rightBarButtonItem];
     } else {
         [self setRightBarButtonItems:@[rightBarButtonItem]];
+        
     }
 }
 
 - (void)zg_setRightBarButtonItems:(NSArray *)rightBarButtonItems {
-    if (!rightBarButtonItems || [rightBarButtonItems isKindOfClass:[NSNull class]] || rightBarButtonItems.count == 0) {
+    if (!rightBarButtonItems || rightBarButtonItems == (id)kCFNull || rightBarButtonItems.count == 0) {
         [self zg_setRightBarButtonItems:nil];
         return;
     }
@@ -95,7 +95,7 @@
         }
         [items addObject:[UIBarButtonItem zg_fixedSpaceWithWidth:-(15 - gap)]];
     }
-    
+
     ZGBarButtonItemCustomView *prevCustomeView = nil;
     for (NSInteger i=0; i<rightBarButtonItems.count; i++) {
         UIBarButtonItem *item = [rightBarButtonItems objectAtIndex:i];
